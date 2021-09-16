@@ -1,4 +1,5 @@
-var port = process.env.PORT || 3000,
+ 
+/*var port = process.env.PORT || 3000,
     http = require('http'),
     fs = require('fs'),
     html = fs.readFileSync('index.html');
@@ -36,4 +37,19 @@ var server = http.createServer(function (req, res) {
 server.listen(port);
 
 // Put a friendly message on the terminal
-console.log('Server running at http://127.0.0.1:' + port + '/');
+console.log('Server running at http://127.0.0.1:' + port + '/');*/
+const express = require("express");
+const app = express();
+
+app.get('/add', function(req, res) {
+    var a = Number(req.query.a);
+    var b = Number(req.query.b)
+    if (!isNaN(a) && !isNaN(b)) {
+        res.send((a + b).toString())
+    } else {
+        res.send("a, b must be number")
+    }
+});
+
+app.listen(process.env.PORT || 5000);
+module.exports = app;
