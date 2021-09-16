@@ -1,31 +1,39 @@
-const express = require('express');
-const path = require('path');
-const store = require('./store/datastore');
-const initialStoreData = require('./store/data');
-const Musician = require('./models/musician');
-const musicianRoutes = require('./routes/musician');
+var port = process.env.PORT || 3000,
+    http = require('http'),
+    fs = require('fs'),
+    html = fs.readFileSync('index.html');
 
-const app = express();
-const port = process.env.PORT || 3001;
+var log = function(entry) {
+    fs.appendFileSync('/tmp/sample-app.log', new Date().toISOString() + ' - ' + entry + '\n');
+};
 
-// include routes
-app.use('/musician', musicianRoutes);
+var server = http.createServer(function (req, res) {
+    if (req.method === 'POST') {
+        var body = '';
 
-app.use(express.static('public'));
+        req.on('data', function(chunk) {
+            body += chunk;
+        });
 
-// Index route
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build/index.html'));
+        req.on('end', function() {
+            if (req.url === '/') {
+                log('Received message: ' + body);
+            } else if (req.url = '/scheduled') {
+                log('Received task ' + req.headers['x-aws-sqsd-taskname'] + ' scheduled at ' + req.headers['x-aws-sqsd-scheduled-at']);
+            }
+
+            res.writeHead(200, 'OK', {'Content-Type': 'text/plain'});
+            res.end();
+        });
+    } else {
+        res.writeHead(200);
+        res.write(html);
+        res.end();
+    }
 });
 
-// initialize store
-const musician = new Musician(store);
-musician.initStore(initialStoreData);
-app.locals.musician = musician;
+// Listen on port 3000, IP defaults to 127.0.0.1
+server.listen(port);
 
-// start server
-const server = app.listen(port, () => {
-  console.log("Server started on port " + port);
-});
-
-module.exports = server;
+// Put a friendly message on the terminal
+console.log('Server running at http://127.0.0.1:' + port + '/');
