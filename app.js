@@ -43,7 +43,7 @@ const app = express();
 
 app.get('/process', function(req, res) {
     var input = String(req.query.input);
-    if (!isString(input) ) {
+    if (!isAlpha(input) ) {
         res.send((input).replace(/\s+/g, ' ').trim().toString())
     } else {
         res.send("input must be string")
