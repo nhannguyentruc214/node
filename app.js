@@ -42,11 +42,11 @@ const express = require("express");
 const app = express();
 
 app.get('/process', function(req, res) {
-    var Input = String(req.query.Input);
-    if (!isString(Input) ) {
-        res.send((Input).replace(/\s+/g, ' ').trim())
+    var input = String(req.query.input);
+    if (!isString(input) ) {
+        res.send((input).replace(/\s+/g, ' ').trim().toString())
     } else {
-        res.send("Input must be string")
+        res.send("input must be string")
     }
 });
 
