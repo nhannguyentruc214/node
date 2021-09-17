@@ -41,13 +41,12 @@ console.log('Server running at http://127.0.0.1:' + port + '/');*/
 const express = require("express");
 const app = express();
 
-app.get('/add', function(req, res) {
-    var a = Number(req.query.a);
-    var b = Number(req.query.b)
-    if (!isNaN(a) && !isNaN(b)) {
-        res.send((a + b).toString())
+app.get('/process', function(req, res) {
+    var Input = String(req.query.Input);
+    if (!isString(Input) ) {
+        res.send((Input).replace(/\s+/g, ' ').trim())
     } else {
-        res.send("a, b must be number")
+        res.send("Input must be string")
     }
 });
 
